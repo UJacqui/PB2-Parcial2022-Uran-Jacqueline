@@ -1,6 +1,6 @@
 package ar.edu.unlam.pb2;
 
-public class Configurador extends Usuario implements Activable{
+public class Configurador extends Usuario implements Configurable{
 	
 	
 
