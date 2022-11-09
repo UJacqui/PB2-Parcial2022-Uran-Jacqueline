@@ -104,4 +104,4 @@ public class TestParcial2022 {
 			System.out.println(accion.getIdAcciones());
 		}
 	}
-}
+  }
