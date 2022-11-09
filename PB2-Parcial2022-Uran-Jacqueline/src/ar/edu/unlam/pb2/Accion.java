@@ -3,7 +3,7 @@ package ar.edu.unlam.pb2;
 import java.util.Date;
 import java.util.Objects;
 
-public class Accion {
+public class Accion implements Comparable<Accion>{
 	private Integer idAcciones;
 	private String fecha;
 	private TipoConfiguracion tipo;
@@ -68,6 +68,11 @@ public class Accion {
 
 	public void setAlarma(Alarma alarma) {
 		this.alarma = alarma;
+	}
+
+	@Override
+	public int compareTo(Accion o) {
+		return this.idAcciones - o.getIdAcciones();
 	}
 	
 	
