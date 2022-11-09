@@ -5,16 +5,26 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Alarma {//implements Comparable<Accion>
+public class Alarma {
 	
 	private Integer idAlarma;
 	private CodActivacion cod;
 	private Integer codConfiguracion;
 	private String nombre;
-	
-	private Set<Usuario> listaUsuarios = new HashSet<>();
 	private ArrayList<Sensor> listaSensores = new ArrayList<>();
 	private Set<Accion> listaDeAcciones = new TreeSet<>();
+	private Set<Usuario> listaUsuarios = new HashSet<>();
+	
+	
+	
+	public Set<Usuario> getListaUsuarios() {
+		return listaUsuarios;
+	}
+
+	public void setListaUsuarios(Set<Usuario> listaUsuarios) {
+		this.listaUsuarios = listaUsuarios;
+	}
+
 	
 	public Alarma(Integer idAlarma, CodActivacion cod, String nombre, Integer codConfiguracion) {
 		this.idAlarma = idAlarma;
@@ -55,9 +65,10 @@ public class Alarma {//implements Comparable<Accion>
 		this.nombre = nombre;
 	}
 
-	public Boolean agregarUsuario(Usuario configurador, Integer codConf) throws CodigoAlarmaIncorrectoException {
-		if (codConf == codConfiguracion) {
-			throw new CodigoAlarmaIncorrectoException("los codigos con coinsiden");
+	public Boolean agregarUsuario(Configurador configurador, Integer codConf) throws CodigoAlarmaIncorrectoException {
+		
+		if (codConf != codConfiguracion) {
+			throw new CodigoAlarmaIncorrectoException("los codigos no coinciden");
 		}
 		this.listaUsuarios.add(configurador);
 		return true;
@@ -65,16 +76,24 @@ public class Alarma {//implements Comparable<Accion>
 
 	
 
-	public Boolean agregarSensor(Sensor sensor,Sensor sensor2, Alarma alarma, Usuario configurador) throws SensorDuplicadoException {
+	public Boolean agregarSensor(Alarma alarma, Sensor sensor, Integer dni) throws SensorDuplicadoException {
 		
-			if (sensor.getIdentificador().equals(sensor2.getIdentificador())) {
-				throw new SensorDuplicadoException("sensores duplicados");
-				
-			}
+		for (Sensor sensor1 : listaSensores) {
 			
+			if(sensor1.getIdentificador() == sensor.getIdentificador()) {
+				throw new SensorDuplicadoException("sensores duplicados");
+								
+			}
+		}
 		
-		this.listaSensores.add(sensor);
+		alarma.agregarALaListaDeSensores(sensor);
 		return true;
+					
+		
+	}
+	
+	public void agregarALaListaDeSensores(Sensor e) {
+		this.listaSensores.add(e);
 	}
 
 	public Boolean activarSensor(Sensor sensor, Alarma alarma) throws SensorDesactivadoException {
@@ -90,18 +109,33 @@ public class Alarma {//implements Comparable<Accion>
 		
 	}
 
+	
 	public void agregarAcciones(Accion accion) {
 		this.listaDeAcciones.add(accion);
 	}
-
-	/*@Override
-	public int compareTo(Accion o) {
-		return o.getIdAcciones()) ;
-	}*/
 	
 	
 
+	public boolean activarAlarma(Alarma alarma, CodActivacion cod2, Configurador usuario) throws SensorDesactivadoException {
+		
+		
+		for (Sensor sensor : listaSensores) {
+			if(sensor.getEstado() == false) {
+				throw new SensorDesactivadoException("sensor desactivado");
+			}
+		}
+				
+		return true;
+		
+	}
+	
+	public Set<Accion> obtenerAccionesOrdenadasPorId(){
+		Set<Accion> accionesOrdenadasId = new TreeSet<>(new OrdenAccionesPorId()); 
+		accionesOrdenadasId.addAll(this.listaDeAcciones);
+		
+		return accionesOrdenadasId;	}
 	
 	
+
 	
 }
